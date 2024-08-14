@@ -4,9 +4,9 @@ import Header from './Header/Header'
 
 export default function Components() {
   return (
-    <div>
-      <Navbar/>
-      <Header/>
+    <div className="m-auto border-2 border-red-500">
+      <Navbar />
+      <Header />
     </div>
-  )
+  );
 }
