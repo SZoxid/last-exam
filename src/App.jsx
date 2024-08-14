@@ -1,10 +1,16 @@
-import "./App.css";
-import Components from "./components/Components";
+import React, { useState } from "react";
+import Home from "./pages/Home/Home";
 
 function App() {
+  const [currency, setCurrency] = useState("usd");
+
+  const handleCurrencyChange = (newCurrency) => {
+    setCurrency(newCurrency);
+  };
+
   return (
     <div>
-      <Components/>
+      <Home currency={currency} onCurrencyChange={handleCurrencyChange} />
     </div>
   );
 }
