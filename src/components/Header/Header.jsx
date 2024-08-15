@@ -11,7 +11,7 @@ export default function Header() {
         backgroundPosition: "center",
       }}
     >
-      <div className="absolute border top-[70px]">
+      <div className="absolute top-[70px]">
         <h2 className="text-[55px] text-[#87CEEB] font-bold">
           CRYPTOFOLIO WATCH LIST
         </h2>
@@ -19,7 +19,7 @@ export default function Header() {
           Get all the Info regarding your favorite Crypto Currency
         </p>
       </div>
-      <div className="absolute w-[1280px] h-[150px] border top-[230px]">
+      <div className="absolute w-[1280px] h-[190px] border top-[203px]">
         <Carousel>
           <img
             src="https://flowbite.com/docs/images/carousel/carousel-1.svg"
@@ -46,4 +46,3 @@ export default function Header() {
     </div>
   );
 }
-

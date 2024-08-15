@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
+import CryptoView from "./pages/CryptoView/CryptoView";
 
 function App() {
   const [currency, setCurrency] = useState("usd");
@@ -9,9 +11,20 @@ function App() {
   };
 
   return (
-    <div>
-      <Home currency={currency} onCurrencyChange={handleCurrencyChange} />
-    </div>
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Home currency={currency} onCurrencyChange={handleCurrencyChange} />
+          }
+        />
+        <Route
+          path="/crypto/:coinId"
+          element={<CryptoView currency={currency} />}
+        />
+      </Routes>
+    </Router>
   );
 }
 

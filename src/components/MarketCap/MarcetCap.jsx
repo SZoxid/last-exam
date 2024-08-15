@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { FiEye, FiChevronLeft, FiChevronRight } from "react-icons/fi";
-// import "./index.css"
+import { useNavigate } from "react-router-dom";
 
 export default function MarketCap({ currency }) {
   const [coins, setCoins] = useState([]);
   const [page, setPage] = useState(1);
   const [currencySymbol, setCurrencySymbol] = useState("₹");
+  const [search, setSearch] = useState("");
+  const [filteredCoins, setFilteredCoins] = useState([]);
+  const navigate = useNavigate();
 
   const itemsPerPage = 10;
   const totalPages = 10;
@@ -25,6 +28,7 @@ export default function MarketCap({ currency }) {
         );
         const data = await response.json();
         setCoins(data);
+        setFilteredCoins(data);
         setCurrencySymbol(currencySymbols[currency.toLowerCase()]);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -33,6 +37,16 @@ export default function MarketCap({ currency }) {
 
     fetchData();
   }, [currency, page]);
+
+  useEffect(() => {
+    setFilteredCoins(
+      coins.filter(
+        (coin) =>
+          coin.name.toLowerCase().includes(search.toLowerCase()) ||
+          coin.symbol.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, [search, coins]);
 
   const handlePreviousPage = () => {
     if (page > 1) {
@@ -91,19 +105,25 @@ export default function MarketCap({ currency }) {
     });
   };
 
+  const navigateToCryptoView = (coinId) => {
+    navigate(`/crypto/${coinId}`); // Kripto valyuta ID si bilan yangi sahifaga o'tamiz
+  };
+
   return (
     <div className="bg-[#14161A]">
-      <div className="max-w-7xl m-auto mt-[20px] p-4 bg-[#14161A]">
-        <h2 className="text-[34px] font-normal text-white text-center">
+      <div className="max-w-7xl m-auto p-4 bg-[#14161A]">
+        <h2 className="text-[34px] font-normal text-white text-center mt-[15px]">
           Cryptocurrency Prices by Market Cap
         </h2>
         <input
           type="text"
           placeholder="Search For a Crypto Currency.."
-          className="w-full h-[55px] rounded-[4px] bg-[#14161A] mt-[12px] text-[16px] font-normal text-white border-[#343A40]"
+          className="w-full h-[55px] rounded-[4px] bg-[#14161A] mt-[13px] text-[16px] font-normal text-white border-[#343A40]"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
 
-        <table className="w-full mt-4 text-white">
+        <table className="w-full mt-[20px] text-white">
           <thead>
             <tr className="bg-[#87CEEB] text-black h-[55px] rounded-t-[4px]">
               <th className="p-[15px] text-left w-[40%]">Coin</th>
@@ -113,8 +133,11 @@ export default function MarketCap({ currency }) {
             </tr>
           </thead>
           <tbody>
-            {coins.map((coin) => (
-              <tr key={coin.id} className="bg-[#1E1F25] h-[95px] border-b">
+            {filteredCoins.map((coin) => (
+              <tr
+                key={coin.id}
+                className="bg-[#16171A] h-[95px] border-b items-center"
+              >
                 <td className="w-full h-[95px] flex items-center pl-[15px] gap-[15px]">
                   <img
                     src={coin.image}
@@ -134,7 +157,7 @@ export default function MarketCap({ currency }) {
                   {currencySymbol} {coin.current_price.toLocaleString()}
                 </td>
                 <td
-                  className="w-full flex items-center justify-end gap-[19px] border h-full"
+                  className="w-full flex items-center justify-end gap-[19px]"
                   style={{
                     color:
                       coin.price_change_percentage_24h >= 0 ? "green" : "red",
@@ -145,7 +168,10 @@ export default function MarketCap({ currency }) {
                     {coin.price_change_percentage_24h.toFixed(2)}%
                   </span>
                 </td>
-                <td className="w-[20%] text-[14px] font-normal text-right pr-[15px] ">
+                <td
+                  className="w-[20%] text-[14px] font-normal text-right pr-[15px] cursor-pointer"
+                  onClick={() => navigateToCryptoView(coin.id)}
+                >
                   {currencySymbol} {coin.market_cap.toLocaleString()}
                 </td>
               </tr>
