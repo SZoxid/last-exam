@@ -24,7 +24,7 @@ export default function Navbar({ onCurrencyChange }) {
             <option value="aed">AED</option>
             <option value="eur">EUR</option>
           </select>
-          <button className="w-[133px] h-[40px] bg-[#87CEEB] border-none rounded-[4px] text-[14px] font-medium uppercase">
+          <button  className="w-[133px] h-[40px] bg-[#87CEEB] border-none rounded-[4px] text-[14px] font-medium uppercase">
             watch list
           </button>
         </div>

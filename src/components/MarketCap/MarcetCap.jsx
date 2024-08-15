@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { FiEye, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 
 export default function MarketCap({ currency }) {
   const [coins, setCoins] = useState([]);
@@ -8,7 +12,14 @@ export default function MarketCap({ currency }) {
   const [currencySymbol, setCurrencySymbol] = useState("₹");
   const [search, setSearch] = useState("");
   const [filteredCoins, setFilteredCoins] = useState([]);
+  const [watchlist, setWatchlist] = useState([]); // Yangi holat
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   const navigate = useNavigate();
+
+  const navigateToCryptoView = (id) => {
+    navigate(`/crypto/${id}`);
+  };
 
   const itemsPerPage = 10;
   const totalPages = 10;
@@ -26,12 +37,17 @@ export default function MarketCap({ currency }) {
         const response = await fetch(
           `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=gecko_desc&per_page=${itemsPerPage}&page=${page}&sparkline=false&price_change_percentage=24h`
         );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
         setCoins(data);
         setFilteredCoins(data);
-        setCurrencySymbol(currencySymbols[currency.toLowerCase()]);
+        setCurrencySymbol(currencySymbols[currency.toLowerCase()] || "₹");
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error.message);
       }
     };
 
@@ -78,7 +94,7 @@ export default function MarketCap({ currency }) {
         totalPages
       );
     }
-
+    
     return pagesToShow.map((pageNumber, index) => {
       if (pageNumber === "...") {
         return (
@@ -91,10 +107,10 @@ export default function MarketCap({ currency }) {
       return (
         <li key={index}>
           <button
-            className={`w-[35px] h-[35px] rounded-[50%] ${
+            className={`w-[35px] h-[35px] rounded-full ${
               page === pageNumber
                 ? "bg-[#343A40] text-[#87CEEB]"
-                : " text-[#87CEEB]"
+                : "text-[#87CEEB]"
             }`}
             onClick={() => setPage(pageNumber)}
           >
@@ -105,13 +121,21 @@ export default function MarketCap({ currency }) {
     });
   };
 
-  const navigateToCryptoView = (coinId) => {
-    navigate(`/crypto/${coinId}`); // Kripto valyuta ID si bilan yangi sahifaga o'tamiz
+  const handleAddToWatchlist = (coin) => {
+    if (!watchlist.find((watchlistCoin) => watchlistCoin.id === coin.id)) {
+      setWatchlist([...watchlist, coin]);
+      setIsDrawerOpen(true);
+    }
+  };
+
+
+  const handleRemoveFromWatchlist = (coinId) => {
+    setWatchlist(watchlist.filter((coin) => coin.id !== coinId));
   };
 
   return (
     <div className="bg-[#14161A]">
-      <div className="max-w-7xl m-auto p-4 bg-[#14161A]">
+      <div className="max-w-7xl mx-auto p-4 bg-[#14161A]">
         <h2 className="text-[34px] font-normal text-white text-center mt-[15px]">
           Cryptocurrency Prices by Market Cap
         </h2>
@@ -140,7 +164,7 @@ export default function MarketCap({ currency }) {
               >
                 <td
                   className="w-full h-[95px] flex items-center pl-[15px] gap-[15px] cursor-pointer"
-                  onClick={() => navigateToCryptoView(coin.id)} 
+                  onClick={() => navigateToCryptoView(coin.id)}
                 >
                   <img
                     src={coin.image}
@@ -160,21 +184,21 @@ export default function MarketCap({ currency }) {
                   {currencySymbol} {coin.current_price.toLocaleString()}
                 </td>
                 <td
-                  className="w-full flex items-center justify-end gap-[19px]"
+                  className="w-full flex items-center justify-end gap-[10px]"
                   style={{
                     color:
                       coin.price_change_percentage_24h >= 0 ? "green" : "red",
                   }}
                 >
-                  <FiEye />
+                  <FiEye
+                    className="w-[26px] h-[24px] cursor-pointer"
+                    onClick={() => handleAddToWatchlist(coin)}
+                  />
                   <span className="ml-2">
                     {coin.price_change_percentage_24h.toFixed(2)}%
                   </span>
                 </td>
-                <td
-                  className="w-[20%] text-[14px] font-normal text-right pr-[15px]"
-                  onClick={() => navigateToCryptoView(coin.id)}
-                >
+                <td className="text-right text-[14px] font-normal pr-[15px]">
                   {currencySymbol} {coin.market_cap.toLocaleString()}
                 </td>
               </tr>
@@ -216,6 +240,50 @@ export default function MarketCap({ currency }) {
           </nav>
         </div>
       </div>
+
+      <Drawer
+        anchor="right"
+        open={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+      >
+        <div className="w-[250px] p-[15px]">
+          <Typography variant="h6">Watchlist</Typography>
+          {watchlist.length > 0 ? (
+            <div className="flex flex-col gap-[15px]">
+              {watchlist.map((coin) => (
+                <div
+                  key={coin.id}
+                  className="flex items-center justify-between bg-[#16171A] rounded-[4px] p-[10px] text-white"
+                >
+                  <div className="flex items-center gap-[10px]">
+                    <img
+                      src={coin.image}
+                      alt={coin.name}
+                      className="w-[40px] h-[40px]"
+                    />
+                    <div className="flex flex-col">
+                      <span>{coin.name}</span>
+                      <span>
+                        {currencySymbol} {coin.current_price.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    size="small"
+                    onClick={() => handleRemoveFromWatchlist(coin.id)}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <Typography variant="body2">No items in watchlist</Typography>
+          )}
+        </div>
+      </Drawer>
     </div>
   );
 }
