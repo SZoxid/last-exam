@@ -138,7 +138,10 @@ export default function MarketCap({ currency }) {
                 key={coin.id}
                 className="bg-[#16171A] h-[95px] border-b items-center"
               >
-                <td className="w-full h-[95px] flex items-center pl-[15px] gap-[15px]">
+                <td
+                  className="w-full h-[95px] flex items-center pl-[15px] gap-[15px] cursor-pointer"
+                  onClick={() => navigateToCryptoView(coin.id)} 
+                >
                   <img
                     src={coin.image}
                     alt={coin.name}
@@ -169,7 +172,7 @@ export default function MarketCap({ currency }) {
                   </span>
                 </td>
                 <td
-                  className="w-[20%] text-[14px] font-normal text-right pr-[15px] cursor-pointer"
+                  className="w-[20%] text-[14px] font-normal text-right pr-[15px]"
                   onClick={() => navigateToCryptoView(coin.id)}
                 >
                   {currencySymbol} {coin.market_cap.toLocaleString()}

@@ -131,8 +131,8 @@ const CryptoView = ({ currency }) => {
         <Navbar />
       </div>
       <div className="w-[98%] flex justify-between m-auto mt-[25px]">
-        <div className="w-[25%] border-r-2">
-          <div className="flex justify-center mt-[20px]">
+        <div className="w-[28%] border-r-2">
+          <div className="flex justify-center mt-[20px] m-auto">
             <img
               src={coin.image.large}
               alt={coin.name}
@@ -143,23 +143,23 @@ const CryptoView = ({ currency }) => {
             {coin.name}
           </h2>
           <div className="mt-[20px]">
-            <p className="w-[330px] h-full text-left text-[14px] font-normal m-auto">
+            <p className="w-[330px] h-full text-left text-[14px] font-normal">
               {description}.
             </p>
-            <div className="w-[330px] h-full text-left mt-[20px]  m-auto mr-[20px]">
-              <span className="mb-[15px] text-[24px] font-bold flex gap-[20px]">
+            <div className="w-[330px] h-full text-left mt-[20px] mr-[20px]">
+              <span className="mb-[15px] text-[24px] font-bold flex items-center gap-[20px]">
                 Rank:{" "}
-                <p className="text-[24px] font-normal">
+                <p className="text-[20px] font-normal">
                   {coin.market_cap_rank}
                 </p>
               </span>
-              <span className="mb-[15px] text-[24px] font-bold flex gap-[20px]">
+              <span className="mb-[15px] text-[24px] font-bold flex items-center gap-[20px]">
                 Current Price:{" "}
-                <p className="text-[24px] font-normal gap-[20px]">{price}</p>
+                <p className="text-[20px] font-normal gap-[20px]">{price}</p>
               </span>
-              <span className="mb-[15px] text-[24px] font-bold flex gap-[20px]">
+              <span className="mb-[15px] text-[24px] font-bold flex items-center gap-[20px]">
                 Market Cap:{" "}
-                <p className="text-[24px] font-normal gap-[20px]">
+                <p className="text-[20px] font-normal ">
                   {marketCap}
                 </p>
               </span>

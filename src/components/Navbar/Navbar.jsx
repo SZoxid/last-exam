@@ -1,11 +1,16 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
+
 
 export default function Navbar({ onCurrencyChange }) {
   return (
     <div className="bg-[#14161A]">
       <div className="w-[1280px] h-[65px] flex justify-between items-center m-auto bg-[#14161A]">
         <div className="p-[15px]">
-          <h2 className="text-[20px] font-bold text-[#87CEEB]">CRYPTOFOLIO</h2>
+          <h2 className="text-[20px] font-bold text-[#87CEEB]">
+            <Link to="/">CRYPTOFOLIO</Link>
+          </h2>
         </div>
         <div className="flex gap-[15px] p-[15px]">
           <select
