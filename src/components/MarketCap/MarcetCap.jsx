@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { FiEye, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import Drawer from "@mui/material/Drawer";
-import Typography from "@mui/material/Typography";
+import DDrawer from "../Drawer/DDrawer";
 
 export default function MarketCap({ currency }) {
   const [coins, setCoins] = useState([]);
@@ -14,11 +13,6 @@ export default function MarketCap({ currency }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const navigate = useNavigate();
-
-  const navigateToCryptoView = (id) => {
-    navigate(`/crypto/${id}`);
-  };
-
   const itemsPerPage = 10;
 
   const currencySymbols = {
@@ -131,6 +125,10 @@ export default function MarketCap({ currency }) {
     setWatchlist(watchlist.filter((coin) => coin.id !== coinId));
   };
 
+  const isCoinInWatchlist = (coinId) => {
+    return watchlist.some((coin) => coin.id === coinId);
+  };
+
   return (
     <div className="bg-[#14161A]">
       <div className="max-w-7xl mx-auto p-4 bg-[#14161A]">
@@ -162,7 +160,7 @@ export default function MarketCap({ currency }) {
               >
                 <td
                   className="w-full h-[95px] flex items-center pl-[15px] gap-[15px] cursor-pointer"
-                  onClick={() => navigateToCryptoView(coin.id)}
+                  onClick={() => navigate(`/crypto/${coin.id}`)}
                 >
                   <img
                     src={coin.image}
@@ -193,8 +191,14 @@ export default function MarketCap({ currency }) {
                   </span>
                 </td>
                 <FiEye
-                  className="w-[26px] h-[24px] cursor-pointer mt-[-25px] ml-[150px]"
-                  onClick={() => handleAddToWatchlist(coin)}
+                  className={`w-[26px] h-[24px] cursor-pointer mt-[-25px] ml-[150px] ${
+                    isCoinInWatchlist(coin.id) ? "text-green-500" : "text-white"
+                  }`}
+                  onClick={() =>
+                    isCoinInWatchlist(coin.id)
+                      ? handleRemoveFromWatchlist(coin.id)
+                      : handleAddToWatchlist(coin)
+                  }
                 />
                 <td className="text-right text-[14px] font-normal pr-[15px]">
                   {currencySymbol} {coin.market_cap.toLocaleString()}
@@ -217,7 +221,7 @@ export default function MarketCap({ currency }) {
                   onClick={handlePreviousPage}
                   disabled={page === 1}
                 >
-                  <FiChevronLeft size={20} />
+                  &lt;
                 </button>
               </li>
               {renderPaginationButtons()}
@@ -231,7 +235,7 @@ export default function MarketCap({ currency }) {
                   onClick={handleNextPage}
                   disabled={page === totalPages}
                 >
-                  <FiChevronRight size={20} />
+                  &gt;
                 </button>
               </li>
             </ul>
@@ -239,56 +243,13 @@ export default function MarketCap({ currency }) {
         </div>
       </div>
 
-      <Drawer
-        anchor="right"
-        open={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        PaperProps={{
-          style: {
-            backgroundColor: "#515151",
-            color: "white",
-          },
-        }}
-      >
-        <div className="w-[400px] p-[15px] ">
-          <Typography
-            variant="h4"
-            className="text-white text-center font-medium uppercase"
-          >
-            Watchlist
-          </Typography>
-          {watchlist.length > 0 ? (
-            <div className="grid grid-cols-2 gap-[15px] mt-[30px]">
-              {" "}
-              {watchlist.map((coin) => (
-                <div
-                  key={coin.id}
-                  className="h-[240px] bg-[#16171A] rounded-[25px] p-[10px] text-white"
-                >
-                  <div className="w-full flex flex-col items-center">
-                    <img
-                      src={coin.image}
-                      alt={coin.name}
-                      className="w-[90px] h-[90px] mt-[15px]"
-                    />
-                    <span className="mt-[30px]">
-                      {currencySymbol} {coin.current_price.toLocaleString()}
-                    </span>
-                    <button
-                      className="w-[100px] h-[35px] mt-[15px] bg-red-600"
-                      onClick={() => handleRemoveFromWatchlist(coin.id)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <Typography variant="body2">No items in watchlist</Typography>
-          )}
-        </div>
-      </Drawer>
+      <DDrawer
+        watchlist={watchlist}
+        isDrawerOpen={isDrawerOpen}
+        setIsDrawerOpen={setIsDrawerOpen} // Uzatish
+        handleRemoveFromWatchlist={handleRemoveFromWatchlist}
+        currencySymbol={currencySymbol}
+      />
     </div>
   );
 }
