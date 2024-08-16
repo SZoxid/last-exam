@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import CryptoView from "./pages/CryptoView/CryptoView";
+import "flowbite/dist/flowbite.css";
+import "./App.css";
 
 function App() {
   const [currency, setCurrency] = useState("usd");

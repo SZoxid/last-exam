@@ -58,17 +58,7 @@ const CryptoView = ({ currency }) => {
           stroke: {
             curve: "smooth",
             width: 3,
-            colors: ["#00E396"],
-          },
-          fill: {
-            type: "gradient",
-            gradient: {
-              shadeIntensity: 1,
-              inverseColors: false,
-              opacityFrom: 0.7,
-              opacityTo: 0.7,
-              stops: [0, 100],
-            },
+            colors: ["#87CEEB"],
           },
           xaxis: {
             type: "datetime",
@@ -113,7 +103,11 @@ const CryptoView = ({ currency }) => {
   }, [coinId, currency]);
 
   if (!coin || chartSeries.length === 0) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full min-h-screen flex justify-center items-center bg-[#14161A] ">
+        <span class="loader"></span>
+      </div>
+    );
   }
 
   const price =
@@ -155,13 +149,11 @@ const CryptoView = ({ currency }) => {
               </span>
               <span className="mb-[15px] text-[24px] font-bold flex items-center gap-[20px]">
                 Current Price:{" "}
-                <p className="text-[20px] font-normal gap-[20px]">{price}</p>
+                <p className="text-[20px] font-normal gap-[20px]">${price}</p>
               </span>
               <span className="mb-[15px] text-[24px] font-bold flex items-center gap-[20px]">
                 Market Cap:{" "}
-                <p className="text-[20px] font-normal ">
-                  {marketCap}
-                </p>
+                <p className="text-[20px] font-normal ">${marketCap}</p>
               </span>
             </div>
           </div>

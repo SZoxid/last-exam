@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FiEye, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 
 export default function MarketCap({ currency }) {
   const [coins, setCoins] = useState([]);
@@ -12,7 +10,7 @@ export default function MarketCap({ currency }) {
   const [currencySymbol, setCurrencySymbol] = useState("₹");
   const [search, setSearch] = useState("");
   const [filteredCoins, setFilteredCoins] = useState([]);
-  const [watchlist, setWatchlist] = useState([]); // Yangi holat
+  const [watchlist, setWatchlist] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -22,7 +20,6 @@ export default function MarketCap({ currency }) {
   };
 
   const itemsPerPage = 10;
-  const totalPages = 10;
 
   const currencySymbols = {
     usd: "$",
@@ -64,6 +61,8 @@ export default function MarketCap({ currency }) {
     );
   }, [search, coins]);
 
+  const totalPages = Math.ceil(coins.length / itemsPerPage);
+
   const handlePreviousPage = () => {
     if (page > 1) {
       setPage(page - 1);
@@ -94,7 +93,7 @@ export default function MarketCap({ currency }) {
         totalPages
       );
     }
-    
+
     return pagesToShow.map((pageNumber, index) => {
       if (pageNumber === "...") {
         return (
@@ -128,7 +127,6 @@ export default function MarketCap({ currency }) {
     }
   };
 
-
   const handleRemoveFromWatchlist = (coinId) => {
     setWatchlist(watchlist.filter((coin) => coin.id !== coinId));
   };
@@ -142,7 +140,7 @@ export default function MarketCap({ currency }) {
         <input
           type="text"
           placeholder="Search For a Crypto Currency.."
-          className="w-full h-[55px] rounded-[4px] bg-[#14161A] mt-[13px] text-[16px] font-normal text-white border-[#343A40]"
+          className="w-full h-[55px] rounded-[4px] bg-[#14161A] mt-[15px] text-[16px] font-normal text-white border-[#343A40] outline-none"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -190,14 +188,14 @@ export default function MarketCap({ currency }) {
                       coin.price_change_percentage_24h >= 0 ? "green" : "red",
                   }}
                 >
-                  <FiEye
-                    className="w-[26px] h-[24px] cursor-pointer"
-                    onClick={() => handleAddToWatchlist(coin)}
-                  />
                   <span className="ml-2">
                     {coin.price_change_percentage_24h.toFixed(2)}%
                   </span>
                 </td>
+                <FiEye
+                  className="w-[26px] h-[24px] cursor-pointer mt-[-25px] ml-[150px]"
+                  onClick={() => handleAddToWatchlist(coin)}
+                />
                 <td className="text-right text-[14px] font-normal pr-[15px]">
                   {currencySymbol} {coin.market_cap.toLocaleString()}
                 </td>
@@ -245,37 +243,44 @@ export default function MarketCap({ currency }) {
         anchor="right"
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
+        PaperProps={{
+          style: {
+            backgroundColor: "#515151",
+            color: "white",
+          },
+        }}
       >
-        <div className="w-[250px] p-[15px]">
-          <Typography variant="h6">Watchlist</Typography>
+        <div className="w-[400px] p-[15px] ">
+          <Typography
+            variant="h4"
+            className="text-white text-center font-medium uppercase"
+          >
+            Watchlist
+          </Typography>
           {watchlist.length > 0 ? (
-            <div className="flex flex-col gap-[15px]">
+            <div className="grid grid-cols-2 gap-[15px] mt-[30px]">
+              {" "}
               {watchlist.map((coin) => (
                 <div
                   key={coin.id}
-                  className="flex items-center justify-between bg-[#16171A] rounded-[4px] p-[10px] text-white"
+                  className="h-[240px] bg-[#16171A] rounded-[25px] p-[10px] text-white"
                 >
-                  <div className="flex items-center gap-[10px]">
+                  <div className="w-full flex flex-col items-center">
                     <img
                       src={coin.image}
                       alt={coin.name}
-                      className="w-[40px] h-[40px]"
+                      className="w-[90px] h-[90px] mt-[15px]"
                     />
-                    <div className="flex flex-col">
-                      <span>{coin.name}</span>
-                      <span>
-                        {currencySymbol} {coin.current_price.toLocaleString()}
-                      </span>
-                    </div>
+                    <span className="mt-[30px]">
+                      {currencySymbol} {coin.current_price.toLocaleString()}
+                    </span>
+                    <button
+                      className="w-[100px] h-[35px] mt-[15px] bg-red-600"
+                      onClick={() => handleRemoveFromWatchlist(coin.id)}
+                    >
+                      Remove
+                    </button>
                   </div>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    size="small"
-                    onClick={() => handleRemoveFromWatchlist(coin.id)}
-                  >
-                    Remove
-                  </Button>
                 </div>
               ))}
             </div>
